@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="EvaluationModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Eval">
+    <Key>
+      <PropertyRef Name="EvalID" />
+    </Key>
+    <Property Name="EvalID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="EvalDate" Type="datetime" />
+    <Property Name="UserID" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Questions">
+    <Key>
+      <PropertyRef Name="QuestionID" />
+    </Key>
+    <Property Name="QuestionID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="QuestionText" Type="varchar" MaxLength="255" />
+    <Property Name="EvalID" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Ratings">
+    <Key>
+      <PropertyRef Name="RatingID" />
+    </Key>
+    <Property Name="RatingID" Type="int" Nullable="false" />
+    <Property Name="Rating" Type="varchar" MaxLength="50" />
+    <Property Name="ResponseID" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Responses">
+    <Key>
+      <PropertyRef Name="ResponseID" />
+    </Key>
+    <Property Name="ResponseID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Response" Type="varchar" MaxLength="255" />
+    <Property Name="Comments" Type="varchar" MaxLength="255" />
+    <Property Name="QuestionID" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="principal_id" Type="int" Nullable="false" />
+    <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="version" Type="int" />
+    <Property Name="definition" Type="varbinary(max)" />
+  </EntityType>
+  <EntityType Name="Users">
+    <Key>
+      <PropertyRef Name="UserID" />
+    </Key>
+    <Property Name="UserID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="varchar" MaxLength="50" />
+    <Property Name="Surname" Type="varchar" MaxLength="50" />
+    <Property Name="Position" Type="varchar" MaxLength="50" />
+    <Property Name="Age" Type="int" />
+    <Property Name="Organization" Type="varchar" MaxLength="50" />
+  </EntityType>
+  <Association Name="FK_EvalUsers">
+    <End Role="Users" Type="Self.Users" Multiplicity="1" />
+    <End Role="Eval" Type="Self.Eval" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Users">
+        <PropertyRef Name="UserID" />
+      </Principal>
+      <Dependent Role="Eval">
+        <PropertyRef Name="UserID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_QuestionsEval">
+    <End Role="Eval" Type="Self.Eval" Multiplicity="1" />
+    <End Role="Questions" Type="Self.Questions" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Eval">
+        <PropertyRef Name="EvalID" />
+      </Principal>
+      <Dependent Role="Questions">
+        <PropertyRef Name="EvalID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_RatingsResponses">
+    <End Role="Responses" Type="Self.Responses" Multiplicity="1" />
+    <End Role="Ratings" Type="Self.Ratings" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Responses">
+        <PropertyRef Name="ResponseID" />
+      </Principal>
+      <Dependent Role="Ratings">
+        <PropertyRef Name="ResponseID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ResponsesQuestions">
+    <End Role="Questions" Type="Self.Questions" Multiplicity="1" />
+    <End Role="Responses" Type="Self.Responses" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Questions">
+        <PropertyRef Name="QuestionID" />
+      </Principal>
+      <Dependent Role="Responses">
+        <PropertyRef Name="QuestionID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="EvaluationModelStoreContainer">
+    <EntitySet Name="Eval" EntityType="Self.Eval" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Questions" EntityType="Self.Questions" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Ratings" EntityType="Self.Ratings" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Responses" EntityType="Self.Responses" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_EvalUsers" Association="Self.FK_EvalUsers">
+      <End Role="Users" EntitySet="Users" />
+      <End Role="Eval" EntitySet="Eval" />
+    </AssociationSet>
+    <AssociationSet Name="FK_QuestionsEval" Association="Self.FK_QuestionsEval">
+      <End Role="Eval" EntitySet="Eval" />
+      <End Role="Questions" EntitySet="Questions" />
+    </AssociationSet>
+    <AssociationSet Name="FK_RatingsResponses" Association="Self.FK_RatingsResponses">
+      <End Role="Responses" EntitySet="Responses" />
+      <End Role="Ratings" EntitySet="Ratings" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ResponsesQuestions" Association="Self.FK_ResponsesQuestions">
+      <End Role="Questions" EntitySet="Questions" />
+      <End Role="Responses" EntitySet="Responses" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

@@ -1,0 +1,136 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="EvaluationModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Commentss">
+    <Key>
+      <PropertyRef Name="Comment" />
+    </Key>
+    <Property Name="Comment" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CommentsText" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+    <Property Name="ResponseID" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Respons" Relationship="Self.FK__Commentss__Respo__4D94879B" FromRole="Commentss" ToRole="Responses" />
+  </EntityType>
+  <EntityType Name="Eval">
+    <Key>
+      <PropertyRef Name="EvalID" />
+    </Key>
+    <Property Name="EvalID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="EvalDate" Type="DateTime" Precision="3" />
+    <Property Name="UserID" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="User" Relationship="Self.FK_EvalUsers" FromRole="Eval" ToRole="Users" />
+    <NavigationProperty Name="Questions" Relationship="Self.FK_QuestionsEval" FromRole="Eval" ToRole="Questions" />
+  </EntityType>
+  <EntityType Name="Question">
+    <Key>
+      <PropertyRef Name="QuestionID" />
+    </Key>
+    <Property Name="QuestionID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="QuestionText" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+    <Property Name="EvalID" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Eval" Relationship="Self.FK_QuestionsEval" FromRole="Questions" ToRole="Eval" />
+    <NavigationProperty Name="Responses" Relationship="Self.FK__Responses__Quest__4E88ABD4" FromRole="Questions" ToRole="Responses" />
+  </EntityType>
+  <EntityType Name="Respons">
+    <Key>
+      <PropertyRef Name="ResponseID" />
+    </Key>
+    <Property Name="ResponseID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Response" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+    <Property Name="QuestionID" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Commentsses" Relationship="Self.FK__Commentss__Respo__4D94879B" FromRole="Responses" ToRole="Commentss" />
+    <NavigationProperty Name="Question" Relationship="Self.FK__Responses__Quest__4E88ABD4" FromRole="Responses" ToRole="Questions" />
+  </EntityType>
+  <EntityType Name="sysdiagram">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="UserID" />
+    </Key>
+    <Property Name="UserID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Surname" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Position" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Age" Type="Int32" />
+    <Property Name="Organization" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Evals" Relationship="Self.FK_EvalUsers" FromRole="Users" ToRole="Eval" />
+  </EntityType>
+  <Association Name="FK__Commentss__Respo__4D94879B">
+    <End Role="Responses" Type="Self.Respons" Multiplicity="1" />
+    <End Role="Commentss" Type="Self.Commentss" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Responses">
+        <PropertyRef Name="ResponseID" />
+      </Principal>
+      <Dependent Role="Commentss">
+        <PropertyRef Name="ResponseID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_EvalUsers">
+    <End Role="Users" Type="Self.User" Multiplicity="1" />
+    <End Role="Eval" Type="Self.Eval" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Users">
+        <PropertyRef Name="UserID" />
+      </Principal>
+      <Dependent Role="Eval">
+        <PropertyRef Name="UserID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_QuestionsEval">
+    <End Role="Eval" Type="Self.Eval" Multiplicity="1" />
+    <End Role="Questions" Type="Self.Question" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Eval">
+        <PropertyRef Name="EvalID" />
+      </Principal>
+      <Dependent Role="Questions">
+        <PropertyRef Name="EvalID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Responses__Quest__4E88ABD4">
+    <End Role="Questions" Type="Self.Question" Multiplicity="1" />
+    <End Role="Responses" Type="Self.Respons" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Questions">
+        <PropertyRef Name="QuestionID" />
+      </Principal>
+      <Dependent Role="Responses">
+        <PropertyRef Name="QuestionID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="EvaluationEntities1" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Commentsses" EntityType="Self.Commentss" />
+    <EntitySet Name="Evals" EntityType="Self.Eval" />
+    <EntitySet Name="Questions" EntityType="Self.Question" />
+    <EntitySet Name="Responses" EntityType="Self.Respons" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+    <EntitySet Name="Users" EntityType="Self.User" />
+    <AssociationSet Name="FK__Commentss__Respo__4D94879B" Association="Self.FK__Commentss__Respo__4D94879B">
+      <End Role="Responses" EntitySet="Responses" />
+      <End Role="Commentss" EntitySet="Commentsses" />
+    </AssociationSet>
+    <AssociationSet Name="FK_EvalUsers" Association="Self.FK_EvalUsers">
+      <End Role="Users" EntitySet="Users" />
+      <End Role="Eval" EntitySet="Evals" />
+    </AssociationSet>
+    <AssociationSet Name="FK_QuestionsEval" Association="Self.FK_QuestionsEval">
+      <End Role="Eval" EntitySet="Evals" />
+      <End Role="Questions" EntitySet="Questions" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Responses__Quest__4E88ABD4" Association="Self.FK__Responses__Quest__4E88ABD4">
+      <End Role="Questions" EntitySet="Questions" />
+      <End Role="Responses" EntitySet="Responses" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
